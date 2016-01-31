@@ -13,10 +13,6 @@ const Task = (props) => {
   );
 };
 
-const createTaskComponent = (task) => {
-  return <Task key={task.id} {...task} />;
-};
-
 /**
  * The TaskList component renders a view for a list
  * of tasks.
@@ -24,6 +20,10 @@ const createTaskComponent = (task) => {
 const TaskList = React.createClass({
   // Display name (useful for debugging)
   displayName: 'TaskList',
+
+  createTaskComponent: function(task) {
+    return <Task key={task.id} {...task} />;
+  },
 
   // Describe how to render the component
   render: function() {
@@ -35,7 +35,7 @@ const TaskList = React.createClass({
       <div>
         <button onClick={onInsertButtonClick}>Insert</button>
         <ul>
-          { _.map(this.props.tasks, createTaskComponent) }
+          { _.map(this.props.tasks, this.createTaskComponent) }
         </ul>
       </div>
     );
