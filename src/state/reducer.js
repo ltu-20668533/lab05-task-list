@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+// The initial state is filled with some dummy data for debugging purposes
 const initialState = {
   tasks: [
     { id: 1, description: 'Mow the lawn', completed: false },
@@ -7,8 +8,11 @@ const initialState = {
   ]
 };
 
+// Action type constant for inserting a new task
 const INSERT = 'task-list/insert';
 
+// The reducer function takes the current state and an action, and returns
+// the new state after applying the action.
 function reducer(state, action) {
   state = state || initialState;
   action = action || {};
@@ -27,8 +31,11 @@ function reducer(state, action) {
   throw new Error('Reducer switch statement should always return');
 }
 
+// Action creator for inserting a new task
 reducer.insertTask = (description) => {
   return { type: INSERT, task: { description, completed: false } };
 };
 
+// Export the reducer function along with the action creators attached
+// to it.
 module.exports = reducer;
