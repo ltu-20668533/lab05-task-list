@@ -1,0 +1,8 @@
+app:
+  build: .
+  environment:
+    - NODE_ENV=development
+  volumes:
+    - ".:/app"
+  ports:
+    - "3000:3000"
