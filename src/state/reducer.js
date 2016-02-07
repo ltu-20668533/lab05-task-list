@@ -14,17 +14,28 @@ const INSERT = 'task-list/insert';
 // The reducer function takes the current state and an action, and returns
 // the new state after applying the action.
 function reducer(state, action) {
+  // Defaults for when state/action are not defined
   state = state || initialState;
   action = action || {};
 
   switch(action.type) {
     case INSERT: {
+      // Copy current state
+      const newState = _.clone(state);
+      // Find next available task ID
       const id = 1 + _.max(_.map(state.tasks, task => task.id));
+      // Construct new task from the details provided via the action
+      // and the next available ID
       const newTask = _.assign({}, action.task, { id });
-      const tasks = state.tasks.concat(newTask);
-      return _.assign({}, state, { tasks });
+      // Set the new array of tasks to be the old array with the
+      // new task included
+      newState.tasks = state.tasks.concat(newTask);
+      // Return the new state
+      return newState;
     }
 
+    // If we don't recognise the action type, just return the store
+    // state unchanged
     default: return state;
   }
 

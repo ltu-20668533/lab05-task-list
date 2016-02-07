@@ -22,6 +22,11 @@ const TaskList = React.createClass({
   displayName: 'TaskList',
 
   createTaskComponent: function(task) {
+    // Note: {...task} is a shortcut for setting properties with
+    // names that match keys in the object. The following line is
+    // equivalent to:
+    //    <Task key={task.id} id={task.id} description={task.description}
+    //      completed={task.completed} />
     return <Task key={task.id} {...task} />;
   },
 
