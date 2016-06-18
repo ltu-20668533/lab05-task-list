@@ -3,7 +3,6 @@ FROM node:6.2.1
 
 # Use Tini as the init process. Tini will take care of important system stuff
 # for us, like forwarding signals and reaping zombie processes.
-ENV TINI_VERSION v0.9.0
 RUN wget -qO /tini https://github.com/krallin/tini/releases/download/v0.9.0/tini \
  && chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
