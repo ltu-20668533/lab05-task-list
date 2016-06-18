@@ -1,27 +1,29 @@
-FROM node:5.4.1
+# Base this image on an official Node.js long term support image.
+FROM node:6.2.1
 
-# Run Tini as PID 1, allowing us to send signals like SIGTERM to the command
-# we decide to run.
-ENV TINI_VERSION v0.8.4
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+# Use Tini as the init process. Tini will take care of important system stuff
+# for us, like forwarding signals and reaping zombie processes.
+ENV TINI_VERSION v0.9.0
+RUN wget -qO /tini https://github.com/krallin/tini/releases/download/v0.9.0/tini \
+ && chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
-# Give unknown non-root users a place to call home.
-# This is required for non-root npm install during development, and doesn't hurt
-# production.
-RUN mkdir -p /home/default && chmod 777 /home/default
+# If there is an NPM registry running on the host at port 4873, use that during
+# build time.
+RUN export NPM_REG_CACHE="http://$(ip route | awk '/default/ {print $3}'):4873" \
+ && curl -sLI -m 1 -o /dev/null "$NPM_REG_CACHE" \
+ && npm --silent set registry "$NPM_REG_CACHE" \
+ || true
 
 # Create a working directory for our application.
 RUN mkdir -p /app
 WORKDIR /app
 
-# Install dependencies with npm.
+# Install the project dependencies.
 COPY package.json /app/
-RUN npm install
-
-# Move dependencies into a global location.
-RUN mkdir -p /deps && mv node_modules /deps/
+RUN npm --silent install \
+ && mkdir /deps \
+ && mv node_modules /deps/node_modules
 ENV NODE_PATH=/deps/node_modules
 
 # Put executables in the system path.
@@ -30,8 +32,16 @@ ENV PATH=$NODE_PATH/.bin:$PATH
 # Copy our application files into the image.
 COPY . /app
 
-# Bundle client-side assets
+# Bundle client-side assets.
 RUN rm -rf dist && NODE_ENV=production gulp build
+
+# Create a non-privileged user for running commands inside the container.
+RUN adduser --disabled-password --gecos '' appuser \
+ && chown -R appuser:appuser /app
+USER appuser
+
+# Point NPM to the official registry.
+RUN npm --silent set registry "https://registry.npmjs.org"
 
 # Start the server on exposed port 3000.
 EXPOSE 3000

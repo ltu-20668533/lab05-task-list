@@ -1,8 +1,10 @@
-app:
-  build: .
-  environment:
-    - NODE_ENV=development
-  volumes:
-    - ".:/app"
-  ports:
-    - "3000:3000"
+version: "2"
+services:
+  app:
+    build: .
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ".:/app"
+    ports:
+      - "3000:3000"
