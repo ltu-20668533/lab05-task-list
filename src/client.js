@@ -1,3 +1,8 @@
+// ## client.js ##
+//
+// This is the entrypoint for our application in the *web browser*.
+// When the web page is loaded, this code will run in the client's web browser.
+
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Redux = require('redux');

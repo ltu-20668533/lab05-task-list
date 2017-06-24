@@ -1,3 +1,7 @@
+// ## TaskList.js ##
+//
+// The TaskList component renders a view for a list of tasks.
+
 const React = require('react');
 const ReactRedux = require('react-redux');
 const _ = require('lodash');

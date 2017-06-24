@@ -1,3 +1,9 @@
+// ## Root.js ##
+//
+// This is our top-level React component which contains all of our other
+// components in a tree-like hierarchy. This component is mounted into the
+// DOM in "client.js".
+
 const React = require('react');
 const ReactRedux = require('react-redux');
 
