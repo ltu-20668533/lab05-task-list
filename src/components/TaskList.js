@@ -21,21 +21,17 @@ const Task = (props) => {
  * The TaskList component renders a view for a list
  * of tasks.
  */
-const TaskList = React.createClass({
-  // Display name (useful for debugging)
-  displayName: 'TaskList',
-
-  createTaskComponent: function(task) {
+class TaskList extends React.Component {
+  createTaskComponent(task) {
     // Note: {...task} is a shortcut for setting properties with
     // names that match keys in the object. The following line is
     // equivalent to:
     //    <Task key={task.id} id={task.id} description={task.description}
     //      completed={task.completed} />
     return <Task key={task.id} {...task} />;
-  },
+  }
 
-  // Describe how to render the component
-  render: function() {
+  render() {
     const onInsertButtonClick = () => {
       this.props.insertTask('Another one');
     };
@@ -49,8 +45,7 @@ const TaskList = React.createClass({
       </div>
     );
   }
-});
-
+}
 
 // Connect TaskList component to the Redux store. That is, we will use
 // parts of the store to pass props to the TaskList component.
