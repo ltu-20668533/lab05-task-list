@@ -22,6 +22,11 @@ const Task = (props) => {
  * of tasks.
  */
 class TaskList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.createTaskComponent = this.createTaskComponent.bind(this);
+  }
+
   createTaskComponent(task) {
     // Note: {...task} is a shortcut for setting properties with
     // names that match keys in the object. The following line is
