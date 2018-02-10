@@ -14,14 +14,6 @@ RUN apk add --no-cache tini curl bash sudo
 # for us, like forwarding signals and reaping zombie processes.
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# If there is an NPM registry running on the host at port 4873, use that during
-# build time. Don't worry too much about what this step does, it's just here
-# to speed up builds by using a cache.
-RUN export NPM_REG_CACHE="http://$(ip route | awk '/default/ {print $3}'):4873" \
- && curl -sLI -m 1 -o /dev/null "$NPM_REG_CACHE" \
- && npm --silent set registry "$NPM_REG_CACHE" \
- || true
-
 # Create a working directory for our application.
 RUN mkdir -p /app
 WORKDIR /app
@@ -45,9 +37,6 @@ RUN rm -rf dist && NODE_ENV=production gulp build
 RUN chown -R node:node /app /deps \
  && echo "node ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-node
 USER node
-
-# Point NPM to the official registry.
-RUN npm --silent set registry "https://registry.npmjs.org"
 
 # Start the server on exposed port 3000.
 EXPOSE 3000
