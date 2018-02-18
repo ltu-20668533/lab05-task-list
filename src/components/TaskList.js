@@ -60,9 +60,9 @@ const ConnectedTaskList = ReactRedux.connect(
     tasks: state.tasks
   }),
   // Map action dispatchers to props
-  // NOTE: _.flow(f, g) returns a function equivalent to g(f(args...))
   (dispatch) => ({
-    insertTask: _.flow(actionCreators.insertTask, dispatch)
+    // Define a function which creates and dispatches an "insert task" action
+    insertTask: (desc) => dispatch(actionCreators.insertTask(desc))
   })
 )(TaskList);
 
