@@ -23,7 +23,7 @@ function reducer(state, action) {
       // Copy current state
       const newState = _.clone(state);
       // Find next available task ID
-      const id = 1 + _.max(_.map(state.tasks, task => task.id));
+      const id = 1 + _.max(state.tasks.map(task => task.id));
       // Construct new task from the details provided via the action
       // and the next available ID
       const newTask = _.assign({}, action.task, { id });

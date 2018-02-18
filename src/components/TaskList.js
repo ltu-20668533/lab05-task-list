@@ -45,7 +45,7 @@ class TaskList extends React.Component {
       <div>
         <button onClick={onInsertButtonClick}>Insert</button>
         <ul>
-          { _.map(this.props.tasks, this.createTaskComponent) }
+          { this.props.tasks.map(this.createTaskComponent) }
         </ul>
       </div>
     );
