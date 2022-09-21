@@ -5,11 +5,14 @@ const initialState = {
   tasks: [
     { id: 1, description: 'Mow the lawn', completed: false },
     { id: 2, description: 'Unbench the Kench', completed: true },
+    { id: 3, description: 'Have lunch', completed: true }
   ]
 };
 
 // Action type constant for inserting a new task
 const INSERT = 'task-list/insert';
+const REMOVE = 'task-list/remove';
+const SET_COMPLETED = 'task-list/set-completed'
 
 // The reducer function takes the current state and an action, and returns
 // the new state after applying the action.
@@ -33,6 +36,22 @@ function reducer(state, action) {
       // Return the new state
       return newState;
     }
+    case REMOVE: {
+      // Copy the current store state
+      const newState = _.clone(state);
+      // Set tasks in the new state to exclude removed task
+      newState.tasks = _.reject(state.tasks, { id: action.id });
+      // Return the new state
+      return newState;
+    }
+    case SET_COMPLETED: {
+      const taskIndex = _.findIndex(state.tasks, {id: action.id})
+      const task = state.tasks[taskIndex]
+      const newTask = _.assign({}, task, {completed: action.completed})
+      const newTasks = _.assign([], state.tasks, {[taskIndex]:newTask})
+      const newState = _.assign({}, state, {tasks: newTasks})
+      return newState
+    }
 
     // If we don't recognise the action type, just return the store
     // state unchanged
@@ -46,6 +65,14 @@ function reducer(state, action) {
 reducer.insertTask = (description) => {
   return { type: INSERT, task: { description, completed: false } };
 };
+//Removing a task
+reducer.removeTask = (id) => {
+  return {type: REMOVE, id}
+}
+//Set completed
+reducer.setCompleted = (id, completed) => {
+  return {type: SET_COMPLETED, id, completed}
+}
 
 // Export the reducer function along with the action creators attached
 // to it.

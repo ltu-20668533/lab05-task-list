@@ -12,8 +12,18 @@ const actionCreators = require('../state/reducer');
  * The Task component renders a view for a single task.
  */
 const Task = (props) => {
+  const onRemoveButtonClick = () => {
+    props.onRemove(props.id);
+  };
+  const onCheckChange = () => {
+    props.conCompletedChange(props.id, !props.completed)
+  }
   return (
-    <li>{props.description}</li>
+    <li>
+      <input type="checkbox" checked={props.completed} />
+      {props.description}
+      <button onClick={onRemoveButtonClick} onChange={onCheckChange}>&times;</button>
+    </li>
   );
 };
 
@@ -25,6 +35,7 @@ class TaskList extends React.Component {
   constructor(props) {
     super(props);
     this.createTaskComponent = this.createTaskComponent.bind(this);
+    this.state = { newTaskDescription: '', disabledAdd: true }
   }
 
   createTaskComponent(task) {
@@ -33,17 +44,29 @@ class TaskList extends React.Component {
     // equivalent to:
     //    <Task key={task.id} id={task.id} description={task.description}
     //      completed={task.completed} />
-    return <Task key={task.id} {...task} />;
+    return <Task key={task.id} 
+            onRemove={this.props.removeTask}
+            onCompletedChange={this.props.setCompleted} 
+            {...task} />;
   }
 
   render() {
+    console.log('newTaskDescription="' + this.state.newTaskDescription + '"');
+
     const onInsertButtonClick = () => {
-      this.props.insertTask('Another one');
+      this.props.insertTask(this.state.newTaskDescription);
+      this.setState({ newTaskDescription: "", disabledAdd: true});
     };
+
+    const onDescriptionInputChange = (event) => {
+      const newTaskDescription = event.target.value;
+      this.setState({ newTaskDescription, disabledAdd: false });   
+     };
 
     return (
       <div>
-        <button onClick={onInsertButtonClick}>Insert</button>
+        <input type="text" value={this.state.newTaskDescription} onChange={onDescriptionInputChange} />
+        <button onClick={onInsertButtonClick} disabled={this.state.disabledAdd}>Insert</button>
         <ul>
           { this.props.tasks.map(this.createTaskComponent) }
         </ul>
@@ -62,7 +85,9 @@ const ConnectedTaskList = ReactRedux.connect(
   // Map action dispatchers to props
   (dispatch) => ({
     // Define a function which creates and dispatches an "insert task" action
-    insertTask: (desc) => dispatch(actionCreators.insertTask(desc))
+    insertTask: (desc) => dispatch(actionCreators.insertTask(desc)),
+    removeTask: (id) => dispatch(actionCreators.removeTask(id)),
+    setCompleted: (id, completed) => dispatch(actionCreators.setCompleted(id, completed))
   })
 )(TaskList);
 
